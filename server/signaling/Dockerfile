@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Étape de compilation, exécutée sur l'architecture du runner et compilée en croisé
 # pour chaque cible (amd64, arm64) : bien plus rapide que l'émulation QEMU.
-FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS build
 ARG TARGETOS
 ARG TARGETARCH
 ARG VERSION=dev
