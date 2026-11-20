@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="baby_channel_name">Surveillance de la chambre</string>
+    <string name="baby_notification_title">Babyphone actif</string>
+    <string name="baby_notification_text">Le micro écoute la chambre. Rien n\'est enregistré.</string>
+    <string name="baby_title">Téléphone bébé</string>
+    <string name="baby_start">Démarrer la surveillance</string>
+    <string name="baby_stop">Arrêter la surveillance</string>
+    <string name="baby_level">Niveau sonore : %1$d dBFS</string>
+    <string name="baby_last_trigger">Bruit détecté à %1$s</string>
+    <string name="baby_no_trigger">Aucun bruit détecté</string>
+    <string name="baby_mic_denied">L\'accès au micro est nécessaire pour surveiller la chambre.</string>
+    <string name="baby_plug_hint">Gardez ce téléphone branché et posé à plus d\'un mètre du lit.</string>
+</resources>

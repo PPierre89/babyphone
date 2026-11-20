@@ -1,0 +1,53 @@
+name: Android
+
+on:
+  push:
+    branches: [main]
+    paths: ["android/**", ".github/workflows/android.yml"]
+  pull_request:
+    paths: ["android/**", ".github/workflows/android.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # Vérifie aussi que le gradle-wrapper.jar commité est authentique.
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Lint, tests unitaires, APK debug et release
+        run: ./gradlew lint testDebugUnitTest assembleDebug assembleRelease
+
+      - name: APK debug
+        uses: actions/upload-artifact@v4
+        with:
+          name: babyphone-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+
+      - name: Rapports en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-android
+          path: |
+            android/**/build/reports/
+            android/**/build/test-results/
+          retention-days: 7

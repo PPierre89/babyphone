@@ -1,0 +1,31 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /android
+    schedule:
+      interval: weekly
+    groups:
+      androidx:
+        patterns: ["androidx.*"]
+      kotlin:
+        patterns: ["org.jetbrains.kotlin*", "com.google.devtools.ksp*"]
+
+  - package-ecosystem: gomod
+    directory: /server/signaling
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker
+    directories: ["/server/signaling"]
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker-compose
+    directory: /deploy
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

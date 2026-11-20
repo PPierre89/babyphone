@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="parent_title">Téléphone parent</string>
+    <string name="parent_no_device">Aucun téléphone bébé appairé.</string>
+    <string name="parent_pair">Appairer un téléphone bébé</string>
+    <string name="parent_coming_soon">L\'appairage par QR code arrive en phase 2.</string>
+</resources>
