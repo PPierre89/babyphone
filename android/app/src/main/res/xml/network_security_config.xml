@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Aucun trafic en clair, et uniquement les autorités de certification du système
+  (les CA installées par l'utilisateur, souvent utilisées pour intercepter le trafic, sont refusées).
+  L'épinglage du certificat du NAS sera ajouté en phase 2, une fois le domaine connu.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

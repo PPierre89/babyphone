@@ -1,0 +1,20 @@
+# Classement des notes de version générées par GitHub (étiquettes posées par .github/workflows/pr.yml).
+changelog:
+  exclude:
+    labels: ["ignorer-notes"]
+    authors: ["dependabot"]
+  categories:
+    - title: Changements incompatibles
+      labels: ["incompatible"]
+    - title: Sécurité
+      labels: ["sécurité"]
+    - title: Nouveautés
+      labels: ["nouveauté"]
+    - title: Correctifs
+      labels: ["correctif"]
+    - title: Performances
+      labels: ["performance"]
+    - title: Documentation
+      labels: ["documentation"]
+    - title: Maintenance
+      labels: ["*"]

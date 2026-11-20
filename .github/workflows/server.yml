@@ -1,0 +1,91 @@
+name: Serveur et déploiement
+
+on:
+  push:
+    branches: [main]
+    paths: ["server/**", "deploy/**", ".github/workflows/server.yml"]
+  pull_request:
+    paths: ["server/**", "deploy/**", ".github/workflows/server.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: server-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  signaling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: server/signaling
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: server/signaling/go.mod
+          cache-dependency-path: server/signaling/go.sum
+
+      - name: Formatage
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+
+      - name: Analyse statique
+        run: go vet ./...
+
+      - name: Tests (détecteur de concurrence) et couverture
+        run: |
+          go test -race -count=1 -coverprofile=coverage.out ./...
+          echo "### Signalisation : couverture $(go tool cover -func=coverage.out | tail -1 | awk '{print $3}')" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Vulnérabilités connues des dépendances
+        uses: golang/govulncheck-action@032d45514ae346b1db93c04b0c90b841c370344f # v1.1.0
+        with:
+          work-dir: server/signaling
+          go-version-file: server/signaling/go.mod
+
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      # Compilation croisée Go dans le Dockerfile : pas besoin de QEMU pour arm64.
+      # Sur les PR, amd64 seulement ; sur main, les deux architectures des NAS courants.
+      - name: Build de l'image (sans publication)
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: server/signaling
+          platforms: ${{ github.event_name == 'push' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+          build-args: VERSION=0.0.0-${{ github.sha }}
+          push: false
+          cache-from: type=gha,scope=signaling
+          cache-to: ${{ github.event_name == 'push' && 'type=gha,mode=max,scope=signaling' || '' }}
+
+  deploy-config:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: deploy
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Fichier .env de test
+        run: |
+          cp .env.example .env
+          sed -i 's/^ALLOWED_FAMILIES=$/ALLOWED_FAMILIES=0123456789abcdef/; s/^TURN_SECRET=$/TURN_SECRET=ci/; s/^PUBLIC_IP=$/PUBLIC_IP=203.0.113.1/' .env
+
+      - name: docker compose valide
+        run: docker compose --env-file .env --profile remote config -q
+
+      - name: Caddyfile valide
+        run: |
+          docker run --rm \
+            -e SIGNALING_DOMAIN=a.example.fr -e PUSH_DOMAIN=b.example.fr -e ACME_EMAIL=ci@example.fr \
+            -v "$PWD/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" \
+            caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile

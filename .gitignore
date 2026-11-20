@@ -1,0 +1,24 @@
+# Secrets : jamais dans le dépôt
+.env
+*.jks
+*.keystore
+keystore.properties
+
+# Android / Gradle
+android/.gradle/
+android/.kotlin/
+android/build/
+android/**/build/
+android/local.properties
+android/captures/
+*.apk
+*.aab
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Go
+server/**/bin/

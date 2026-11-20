@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Babyphone</string>
+    <string name="role_title">Comment ce téléphone sera-t-il utilisé ?</string>
+    <string name="role_baby">Téléphone bébé</string>
+    <string name="role_baby_desc">Reste dans la chambre, branché, et écoute.</string>
+    <string name="role_parent">Téléphone parent</string>
+    <string name="role_parent_desc">Reçoit les alertes et permet d\'écouter.</string>
+    <string name="role_change">Changer de rôle</string>
+</resources>
