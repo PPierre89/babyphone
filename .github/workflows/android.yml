@@ -31,7 +31,7 @@ jobs:
 
       # Cache Gradle (dépendances, build cache) : écrit sur main, en lecture seule sur les PR.
       # Vérifie aussi que le gradle-wrapper.jar commité est authentique.
-      - uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
       # Sur les PR : le minimum utile. Sur main : en plus le build release (R8), plus lent.
       - name: Lint, tests unitaires, APK debug
