@@ -25,11 +25,14 @@ class LoudnessDetector(
 
     /**
      * Analyse une trame audio PCM 16 bits mono.
+     * @param frameSampleRateHz fréquence de la trame : le micro peut changer de source en cours de route
+     *   (capture locale à 16 kHz, puis capture WebRTC à 48 kHz pendant une écoute).
      * @return un [Trigger] si le seuil a été dépassé assez longtemps, sinon `null`.
      */
-    fun process(frame: ShortArray): Trigger? {
+    @Synchronized
+    fun process(frame: ShortArray, frameSampleRateHz: Int = sampleRateHz): Trigger? {
         if (frame.isEmpty()) return null
-        val frameMs = frame.size * 1_000L / sampleRateHz
+        val frameMs = frame.size * 1_000L / frameSampleRateHz
         val level = levelDbfs(frame)
         msSinceTrigger += frameMs
 
@@ -43,6 +46,7 @@ class LoudnessDetector(
         return null
     }
 
+    @Synchronized
     fun reset() {
         loudMs = 0L
         msSinceTrigger = Long.MAX_VALUE / 2

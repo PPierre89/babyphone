@@ -11,4 +11,10 @@
     <string name="baby_no_trigger">Aucun bruit détecté</string>
     <string name="baby_mic_denied">L\'accès au micro est nécessaire pour surveiller la chambre.</string>
     <string name="baby_plug_hint">Gardez ce téléphone branché et posé à plus d\'un mètre du lit.</string>
+    <string name="baby_no_listener">Aucun parent à l\'écoute</string>
+    <plurals name="baby_listeners">
+        <item quantity="one">%1$d parent à l\'écoute</item>
+        <item quantity="other">%1$d parents à l\'écoute</item>
+    </plurals>
+    <string name="baby_address">Adresse à saisir sur le téléphone parent si besoin : %1$s</string>
 </resources>

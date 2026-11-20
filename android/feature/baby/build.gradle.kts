@@ -11,6 +11,8 @@ android {
 
 dependencies {
     implementation(project(":core:detection"))
+    implementation(project(":core:media"))
+    implementation(project(":core:network"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.activity.compose)

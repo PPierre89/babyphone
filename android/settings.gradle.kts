@@ -19,6 +19,7 @@ rootProject.name = "babyphone"
 include(":app")
 include(":core:crypto")
 include(":core:detection")
+include(":core:media")
 include(":core:network")
 include(":feature:pairing")
 include(":feature:baby")

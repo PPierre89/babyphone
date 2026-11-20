@@ -49,3 +49,20 @@ Tout autre type envoyé par un client est refusé (`error` / `invalid_message`).
 | Débit | 20 messages/s, rafale de 40 | fermeture 1008 |
 | Appareils par famille | 8 | fermeture 1008 |
 | Reconnexion d'un même appareil | — | l'ancienne connexion est fermée |
+
+## Mode local (Wi-Fi, sans NAS)
+
+Depuis la phase 1, le téléphone bébé expose la même signalisation directement sur le Wi-Fi (ADR 0007) :
+
+- Découverte mDNS : service `_babyphone._tcp`, ou adresse `IP:port` affichée sur le téléphone bébé.
+- Transport : TCP, un message JSON par ligne (`\n`), 64 Kio maximum par ligne.
+- `from` est imposé par la connexion (`parent-N` côté bébé, `bebe` côté parent) ; `to` est ignoré.
+- Types propres au mode local :
+
+| Type | Usage |
+| --- | --- |
+| `ping` | Envoyé par chaque côté toutes les 10 s ; sans aucun message reçu pendant 30 s, la connexion est fermée. Jamais transmis à l'application. |
+| `hangup` | Le parent arrête l'écoute. |
+
+- Négociation : le parent envoie `offer` (audio en réception seule), le bébé répond `answer` avec son micro, puis échange de `ice`.
+- Le bébé envoie `status` à la connexion puis toutes les 30 s (`battery`, `charging`, `listeners`), et `alert` quand un bruit est détecté (`kind`, `levelDbfs`, `at`).

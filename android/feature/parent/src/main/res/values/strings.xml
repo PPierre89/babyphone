@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="parent_title">Téléphone parent</string>
-    <string name="parent_no_device">Aucun téléphone bébé appairé.</string>
-    <string name="parent_pair">Appairer un téléphone bébé</string>
-    <string name="parent_coming_soon">L\'appairage par QR code arrive en phase 2.</string>
+    <string name="parent_pick">Choisir le téléphone bébé</string>
+    <string name="parent_searching">Recherche sur le Wi-Fi… Vérifiez que la surveillance est démarrée sur le téléphone bébé et que les deux téléphones sont sur le même réseau.</string>
+    <string name="parent_manual">Le téléphone bébé n\'apparaît pas ? Saisissez l\'adresse affichée sur son écran.</string>
+    <string name="parent_manual_hint">Adresse (ex. 192.168.1.20:41234)</string>
+    <string name="parent_listen">Écouter</string>
+    <string name="parent_stop">Arrêter l\'écoute</string>
+
+    <string name="parent_status_connecting">Connexion…</string>
+    <string name="parent_status_listening">À l\'écoute</string>
+    <string name="parent_status_reconnecting">Coupure, reconnexion…</string>
+    <string name="parent_status_unreachable">Téléphone bébé injoignable</string>
+
+    <string name="parent_metric_duration">Durée d\'écoute</string>
+    <string name="parent_metric_latency">Latence estimée</string>
+    <string name="parent_metric_loss">Pertes</string>
+    <string name="parent_metric_interruptions">Coupures</string>
+    <string name="parent_metric_battery">Batterie du téléphone bébé</string>
+    <string name="parent_metric_noise">Dernier bruit détecté</string>
+    <string name="parent_charging">en charge</string>
+
+    <string name="parent_channel_name">Écoute du téléphone bébé</string>
+    <string name="parent_notification_title">Écoute en cours</string>
+    <string name="parent_notification_text">Vous entendez la chambre de bébé.</string>
+    <string name="parent_alert_channel">Alertes du babyphone</string>
+    <string name="parent_lost_title">Téléphone bébé injoignable</string>
+    <string name="parent_lost_text">Plus de son depuis 30 secondes. Vérifiez le téléphone bébé et le Wi-Fi.</string>
 </resources>

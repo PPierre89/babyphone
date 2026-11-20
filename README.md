@@ -16,12 +16,12 @@ Application babyphone pour Android : un vieux téléphone posé dans la chambre 
 
 ## État
 
-Phase 0, le socle, est en place : structure du projet, choix du rôle, mesure du niveau sonore en local, serveur de signalisation, déploiement NAS et CI. Le flux audio entre téléphones arrive en phase 1.
+Phase 1 en test : le téléphone parent entend la chambre en direct sur le Wi-Fi de la maison, sans NAS, avec reconnexion automatique et alerte si le téléphone bébé devient injoignable. Protocole de test du jalon G1 : [docs/phase-1-test.md](docs/phase-1-test.md).
 
 | Phase | Contenu | État |
 | --- | --- | --- |
 | 0 | Socle : dépôt, CI, ADR, NAS | fait |
-| 1 | PoC audio WebRTC en local | à faire |
+| 1 | PoC audio WebRTC en local | à tester sur téléphones (jalon G1) |
 | 2 | Appairage QR et sécurité | à faire |
 | 3 | Détection des pleurs et alertes | à faire |
 | 4 | Accès à distance (4G) | à faire |
@@ -35,10 +35,11 @@ android/                 Application Android (Kotlin, Jetpack Compose, Hilt)
 ├── app/                 Point d'entrée, choix du rôle
 ├── core/crypto/         Clé d'appareil (Android Keystore), vérification de signatures
 ├── core/detection/      Détection de bruit (niveau sonore, seuil, délai de garde)
-├── core/network/        Client et messages de signalisation
+├── core/media/          WebRTC audio : session bébé ↔ parent, estimation de latence
+├── core/network/        Messages de signalisation, client NAS, signalisation locale Wi-Fi (mDNS)
 ├── feature/pairing/     Format et validation du QR code d'appairage
-├── feature/baby/        Service au premier plan qui écoute la chambre
-└── feature/parent/      Écran parent
+├── feature/baby/        Service qui écoute la chambre, diffuse aux parents et détecte le bruit
+└── feature/parent/      Service d'écoute (écran éteint), reconnexion, alerte de coupure
 server/signaling/        Serveur de signalisation (Go), voir PROTOCOL.md
 deploy/                  Docker Compose pour le NAS : Caddy, signalisation, ntfy, coturn
 docs/adr/                Décisions d'architecture
@@ -87,7 +88,8 @@ Voir [deploy/README.md](deploy/README.md).
 | [docs/RELEASING.md](docs/RELEASING.md) | Publier une version, clé de signature, mise à jour du NAS |
 | [SECURITY.md](SECURITY.md) | Signaler une faille, vérifier une release, limites connues |
 | [deploy/README.md](deploy/README.md) | Installer et mettre à jour le NAS |
-| [server/signaling/PROTOCOL.md](server/signaling/PROTOCOL.md) | Protocole de signalisation |
+| [server/signaling/PROTOCOL.md](server/signaling/PROTOCOL.md) | Protocole de signalisation (NAS et Wi-Fi local) |
+| [docs/phase-1-test.md](docs/phase-1-test.md) | Tester l'écoute : latence, 8 h, coupures |
 | [docs/adr/](docs/adr/) | Décisions d'architecture |
 
 ## Versions
@@ -114,3 +116,4 @@ Le modèle de menace et les mesures prévues sont décrits dans le document d'ar
 - [0004 — Notifications avec ntfy](docs/adr/0004-notifications-ntfy.md)
 - [0005 — Clé d'appareil ECDSA P-256](docs/adr/0005-cle-appareil-ecdsa-p256.md)
 - [0006 — Une seule version issue du tag git](docs/adr/0006-versioning.md)
+- [0007 — Signalisation directe sur le Wi-Fi](docs/adr/0007-signalisation-locale.md)

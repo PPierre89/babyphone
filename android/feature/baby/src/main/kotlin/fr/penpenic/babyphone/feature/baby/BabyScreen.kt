@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,6 +35,8 @@ fun BabyScreen(modifier: Modifier = Modifier) {
     val running by BabyMonitorState.running.collectAsStateWithLifecycle()
     val level by BabyMonitorState.levelDbfs.collectAsStateWithLifecycle()
     val lastTrigger by BabyMonitorState.lastTriggerAtMillis.collectAsStateWithLifecycle()
+    val listeners by BabyMonitorState.listeners.collectAsStateWithLifecycle()
+    val address by BabyMonitorState.address.collectAsStateWithLifecycle()
     var micDenied by remember { mutableStateOf(false) }
 
     val permissions = buildList {
@@ -65,6 +68,14 @@ fun BabyScreen(modifier: Modifier = Modifier) {
                     stringResource(R.string.baby_last_trigger, DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(it)))
                 } ?: stringResource(R.string.baby_no_trigger),
             )
+            Text(
+                if (listeners == 0) stringResource(R.string.baby_no_listener)
+                else pluralStringResource(R.plurals.baby_listeners, listeners, listeners),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            address?.let {
+                Text(stringResource(R.string.baby_address, it), style = MaterialTheme.typography.bodySmall)
+            }
             OutlinedButton(onClick = { BabyMonitorService.stop(context) }) {
                 Text(stringResource(R.string.baby_stop))
             }
