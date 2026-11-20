@@ -10,14 +10,17 @@ Trois services dans Docker Compose : **Caddy** (seul exposé, TLS automatique), 
 
 ## Installation
 
+Récupérer le paquet `babyphone-deploy-X.Y.Z.tar.gz` de la [dernière release](https://github.com/PPierre89/babyphone/releases) (ou ce dossier du dépôt), puis :
+
 ```bash
-cd deploy
+tar -xzf babyphone-deploy-X.Y.Z.tar.gz && cd deploy
 cp .env.example .env
 # Renseigner les domaines, l'e-mail, et générer un identifiant de famille :
 openssl rand -hex 16
 chmod 600 .env
 
-docker compose --env-file .env up -d --build
+docker compose --env-file .env pull     # image publiée, amd64 ou arm64 selon le NAS
+docker compose --env-file .env up -d
 docker compose ps        # tous les services doivent être "healthy"
 curl https://<SIGNALING_DOMAIN>/healthz   # doit répondre "ok"
 ```
@@ -30,6 +33,12 @@ docker compose exec ntfy ntfy access telephone-parent "babyphone-<famille>-*" re
 docker compose exec ntfy ntfy user add telephone-bebe
 docker compose exec ntfy ntfy access telephone-bebe "babyphone-<famille>-*" write-only
 ```
+
+Sans release publiée, ou pour tester une modification locale : `docker compose --env-file .env up -d --build` compile l'image sur le NAS.
+
+## Mettre à jour
+
+Changer `SIGNALING_VERSION` dans `.env`, puis `pull` et `up -d` (détails dans [docs/RELEASING.md](../docs/RELEASING.md#procédure)). La version effectivement lancée apparaît dans `docker compose logs signaling`.
 
 ## Phase 4 : accès en 4G
 

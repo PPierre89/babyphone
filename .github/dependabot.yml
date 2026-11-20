@@ -4,6 +4,9 @@ updates:
     directory: /android
     schedule:
       interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
     groups:
       androidx:
         patterns: ["androidx.*"]
@@ -14,18 +17,30 @@ updates:
     directory: /server/signaling
     schedule:
       interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
 
   - package-ecosystem: docker
     directories: ["/server/signaling"]
     schedule:
       interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
 
   - package-ecosystem: docker-compose
     directory: /deploy
     schedule:
       interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope

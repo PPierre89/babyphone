@@ -47,8 +47,13 @@ services:
 
   signaling:
     <<: *hardening
-    build: ../server/signaling
-    image: babyphone-signaling:local
+    # Image publiée par la CI à chaque release (amd64 et arm64).
+    # Pour compiler localement à la place : docker compose up -d --build
+    image: ghcr.io/ppierre89/babyphone-signaling:${SIGNALING_VERSION:?définir SIGNALING_VERSION dans .env}
+    build:
+      context: ../server/signaling
+      args:
+        VERSION: ${SIGNALING_VERSION}
     environment:
       ALLOWED_FAMILIES: ${ALLOWED_FAMILIES:?définir ALLOWED_FAMILIES dans .env}
     networks:

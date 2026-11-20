@@ -1,5 +1,9 @@
 # Babyphone
 
+[![Android](https://github.com/PPierre89/babyphone/actions/workflows/android.yml/badge.svg)](https://github.com/PPierre89/babyphone/actions/workflows/android.yml)
+[![Serveur](https://github.com/PPierre89/babyphone/actions/workflows/server.yml/badge.svg)](https://github.com/PPierre89/babyphone/actions/workflows/server.yml)
+[![Release](https://img.shields.io/github/v/release/PPierre89/babyphone?include_prereleases&label=version)](https://github.com/PPierre89/babyphone/releases)
+
 Application babyphone pour Android : un vieux téléphone posé dans la chambre écoute le bébé, le téléphone des parents reçoit les alertes et permet d'écouter. Le serveur est auto-hébergé sur un NAS et ne voit jamais le son ni l'image.
 
 ## Principes
@@ -40,7 +44,16 @@ deploy/                  Docker Compose pour le NAS : Caddy, signalisation, ntfy
 docs/adr/                Décisions d'architecture
 ```
 
-## Démarrer
+## Installer
+
+Télécharger la dernière version sur la page [Releases](https://github.com/PPierre89/babyphone/releases) :
+
+- `babyphone-X.Y.Z.apk` sur les deux téléphones (autoriser l'installation depuis cette source) ;
+- sur le NAS, suivre [deploy/README.md](deploy/README.md) avec la même version.
+
+Chaque release est signée et accompagnée d'empreintes et d'attestations de provenance : voir [SECURITY.md](SECURITY.md#vérifier-ce-que-vous-installez).
+
+## Développer
 
 ### Application Android
 
@@ -52,7 +65,7 @@ cd android
 adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
-L'APK de debug de chaque build est aussi téléchargeable dans l'onglet *Actions* de GitHub.
+L'APK de debug de chaque build est aussi téléchargeable dans l'onglet *Actions* de GitHub. Un build local porte la version `0.0.0-dev`.
 
 ### Serveur de signalisation
 
@@ -66,6 +79,21 @@ ALLOWED_FAMILIES=famille_dev01 go run .
 
 Voir [deploy/README.md](deploy/README.md).
 
+## Documentation
+
+| Document | Contenu |
+| --- | --- |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Branches, titres de PR, vérifications locales, ce que fait la CI |
+| [docs/RELEASING.md](docs/RELEASING.md) | Publier une version, clé de signature, mise à jour du NAS |
+| [SECURITY.md](SECURITY.md) | Signaler une faille, vérifier une release, limites connues |
+| [deploy/README.md](deploy/README.md) | Installer et mettre à jour le NAS |
+| [server/signaling/PROTOCOL.md](server/signaling/PROTOCOL.md) | Protocole de signalisation |
+| [docs/adr/](docs/adr/) | Décisions d'architecture |
+
+## Versions
+
+Une seule version pour l'app, le serveur et le déploiement, au format `X.Y.Z`, fixée par le tag git (ADR 0006). Les notes de chaque version sont sur la page [Releases](https://github.com/PPierre89/babyphone/releases).
+
 ## Sécurité
 
 Le modèle de menace et les mesures prévues sont décrits dans le document d'architecture du projet. Déjà en place dans le socle :
@@ -75,7 +103,8 @@ Le modèle de menace et les mesures prévues sont décrits dans le document d'ar
 - Clé d'appareil non exportable dans le Keystore (StrongBox si disponible).
 - Serveur : familles autorisées uniquement, émetteur imposé par le serveur, limites de taille et de débit, refus des connexions venant d'un navigateur.
 - Conteneurs en lecture seule, non root, sans capacités, sur un réseau interne.
-- CI : lint, tests, `govulncheck`, Dependabot.
+- CI : lint, tests, `govulncheck`, actions épinglées par empreinte, Dependabot.
+- Releases : APK signé (schéma v3), image avec SBOM, empreintes SHA-256 et attestations de provenance.
 
 ## Décisions d'architecture
 
@@ -84,3 +113,4 @@ Le modèle de menace et les mesures prévues sont décrits dans le document d'ar
 - [0003 — Signalisation en Go](docs/adr/0003-signalisation-go.md)
 - [0004 — Notifications avec ntfy](docs/adr/0004-notifications-ntfy.md)
 - [0005 — Clé d'appareil ECDSA P-256](docs/adr/0005-cle-appareil-ecdsa-p256.md)
+- [0006 — Une seule version issue du tag git](docs/adr/0006-versioning.md)

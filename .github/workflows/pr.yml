@@ -1,0 +1,47 @@
+name: Titre de PR
+
+# Les titres de PR deviennent les notes de version : on impose le format Conventional Commits
+# et on pose l'étiquette correspondante (voir .github/release.yml et docs/RELEASING.md).
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  title:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Vérifier le format et étiqueter
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          pattern='^(feat|fix|sec|perf|refactor|docs|test|build|ci|chore|revert)(\([a-z0-9-]+\))?(!)?: .+'
+          if ! [[ "$TITLE" =~ $pattern ]]; then
+            echo "::error::Titre de PR invalide : « $TITLE »"
+            echo "Format attendu : type(portée optionnelle): description — ex. « feat(android): écoute audio WebRTC »"
+            echo "Types : feat fix sec perf refactor docs test build ci chore revert ; « ! » pour un changement incompatible."
+            exit 1
+          fi
+          type="${BASH_REMATCH[1]}"
+          breaking="${BASH_REMATCH[3]}"
+          case "$type" in
+            feat) label="nouveauté" ;;
+            fix) label="correctif" ;;
+            sec) label="sécurité" ;;
+            perf) label="performance" ;;
+            docs) label="documentation" ;;
+            *) label="maintenance" ;;
+          esac
+          # Les PR venant d'un fork n'ont qu'un jeton en lecture : on ne fait que vérifier.
+          [ "$SAME_REPO" = "true" ] || exit 0
+          gh api "repos/$REPO/issues/$PR/labels" -f "labels[]=$label" --silent
+          [ -n "$breaking" ] && gh api "repos/$REPO/issues/$PR/labels" -f "labels[]=incompatible" --silent
+          exit 0

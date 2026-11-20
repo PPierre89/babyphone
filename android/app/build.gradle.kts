@@ -6,6 +6,20 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+/**
+ * Version unique du projet, issue du tag git `vX.Y.Z` (voir docs/RELEASING.md).
+ * La CI de release la passe dans BABYPHONE_VERSION ; en local on obtient "0.0.0-dev".
+ * versionCode = X × 1 000 000 + Y × 1 000 + Z : toujours croissant, ce qu'exige Android pour une mise à jour.
+ */
+val appVersion: String = providers.environmentVariable("BABYPHONE_VERSION").orElse("0.0.0-dev").get().removePrefix("v")
+val appVersionCode: Int = run {
+    val match = Regex("""^(\d+)\.(\d+)\.(\d+)(-[0-9A-Za-z.-]+)?$""").matchEntire(appVersion)
+        ?: error("Version invalide « $appVersion » : format attendu X.Y.Z ou X.Y.Z-suffixe")
+    val (major, minor, patch) = match.destructured.toList().take(3).map(String::toInt)
+    require(minor < 1000 && patch < 1000) { "minor et patch doivent rester sous 1000" }
+    maxOf(1, major * 1_000_000 + minor * 1_000 + patch)
+}
+
 android {
     namespace = "fr.penpenic.babyphone"
     compileSdk = 36
@@ -14,8 +28,8 @@ android {
         applicationId = "fr.penpenic.babyphone"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = appVersionCode
+        versionName = appVersion
     }
 
     // La signature release lit sa configuration dans l'environnement (secrets CI), jamais dans le dépôt.

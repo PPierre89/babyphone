@@ -24,6 +24,9 @@ import (
 	"github.com/coder/websocket"
 )
 
+// version est injectée au build : go build -ldflags "-X main.version=1.2.3".
+var version = "dev"
+
 type Config struct {
 	ListenAddr      string
 	AllowedFamilies map[string]bool
@@ -107,7 +110,12 @@ func healthcheck(addr string) int {
 
 func main() {
 	check := flag.Bool("healthcheck", false, "vérifie que le serveur local répond (pour Docker)")
+	showVersion := flag.Bool("version", false, "affiche la version et quitte")
 	flag.Parse()
+	if *showVersion {
+		fmt.Println(version)
+		return
+	}
 
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	if *check {
@@ -140,7 +148,7 @@ func main() {
 		_ = srv.Shutdown(shutdown)
 	}()
 
-	log.Info("serveur de signalisation démarré", "addr", cfg.ListenAddr, "families", len(cfg.AllowedFamilies))
+	log.Info("serveur de signalisation démarré", "version", version, "addr", cfg.ListenAddr, "families", len(cfg.AllowedFamilies))
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Error("arrêt sur erreur", "error", err)
 		os.Exit(1)
