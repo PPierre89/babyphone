@@ -30,6 +30,9 @@ android {
         targetSdk = 36
         versionCode = appVersionCode
         versionName = appVersion
+        // WebRTC embarque une bibliothèque native par architecture (6 à 13 Mo chacune) :
+        // la release ne garde que les téléphones (ARM), le debug ajoute l'émulateur 64 bits.
+        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }
 
     // La signature release lit sa configuration dans l'environnement (secrets CI), jamais dans le dépôt.
@@ -55,6 +58,7 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
+            ndk { abiFilters += "x86_64" }
         }
     }
 
@@ -75,6 +79,7 @@ android {
 dependencies {
     implementation(project(":core:crypto"))
     implementation(project(":core:detection"))
+    implementation(project(":core:media"))
     implementation(project(":core:network"))
     implementation(project(":feature:pairing"))
     implementation(project(":feature:baby"))

@@ -15,9 +15,21 @@ object BabyMonitorState {
     private val _lastTriggerAtMillis = MutableStateFlow<Long?>(null)
     val lastTriggerAtMillis: StateFlow<Long?> = _lastTriggerAtMillis.asStateFlow()
 
+    /** Nombre de téléphones parents qui écoutent en ce moment. */
+    private val _listeners = MutableStateFlow(0)
+    val listeners: StateFlow<Int> = _listeners.asStateFlow()
+
+    /** Adresse à saisir sur le téléphone parent si la découverte automatique échoue (ex. 192.168.1.20:41234). */
+    private val _address = MutableStateFlow<String?>(null)
+    val address: StateFlow<String?> = _address.asStateFlow()
+
     internal fun setRunning(value: Boolean) {
         _running.value = value
-        if (!value) _levelDbfs.value = -120.0
+        if (!value) {
+            _levelDbfs.value = -120.0
+            _listeners.value = 0
+            _address.value = null
+        }
     }
 
     internal fun setLevel(value: Double) {
@@ -26,5 +38,13 @@ object BabyMonitorState {
 
     internal fun triggered(atMillis: Long) {
         _lastTriggerAtMillis.value = atMillis
+    }
+
+    internal fun setListeners(count: Int) {
+        _listeners.value = count
+    }
+
+    internal fun setAddress(value: String?) {
+        _address.value = value
     }
 }

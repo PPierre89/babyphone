@@ -29,6 +29,10 @@ data class SignalingMessage(
         const val ALERT = "alert"
         const val STATUS = "status"
 
+        // Signalisation locale uniquement (Wi-Fi, sans NAS)
+        const val PING = "ping"
+        const val HANGUP = "hangup"
+
         // Messages émis par le serveur
         const val PEERS = "peers"
         const val PEER_JOINED = "peer_joined"

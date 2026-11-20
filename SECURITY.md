@@ -28,5 +28,6 @@ Le NAS, le relais TURN et le réseau sont considérés comme non fiables : seuls
 
 Limites connues de la version actuelle (0.x) :
 
+- **mode local (phase 1)** : la connexion directe sur le Wi-Fi n'est pas encore authentifiée ; un appareil présent sur le même réseau peut se connecter au téléphone bébé. Le son reste chiffré par WebRTC, mais n'utiliser ce mode que sur le réseau de la maison ([ADR 0007](docs/adr/0007-signalisation-locale.md)) ;
 - l'authentification des appareils auprès du serveur arrive en phase 2 ; d'ici là, l'accès est limité aux familles listées dans `ALLOWED_FAMILIES` ;
 - l'épinglage du certificat du NAS dans l'app arrive aussi en phase 2.

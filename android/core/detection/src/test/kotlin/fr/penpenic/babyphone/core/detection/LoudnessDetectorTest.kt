@@ -51,4 +51,12 @@ class LoudnessDetectorTest {
         assertNull(detector.process(frame(0.05)))     // environ -29 dBFS
         assertNotNull(detector.process(frame(0.9)))   // environ -4 dBFS
     }
+
+    @Test
+    fun `accepte des trames a une autre frequence d'echantillonnage`() {
+        val detector = LoudnessDetector(sampleRateHz = 16_000, minLoudMs = 1_000)
+        val frame48k = ShortArray(960) { i -> (16_000 * sin(2 * PI * 440 * i / 48_000)).toInt().toShort() } // 20 ms
+        val triggers = (1..60).mapNotNull { detector.process(frame48k, frameSampleRateHz = 48_000) } // 1,2 s
+        assertEquals(1, triggers.size)
+    }
 }
