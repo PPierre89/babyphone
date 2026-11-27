@@ -63,7 +63,7 @@ services:
 
   ntfy:
     <<: *hardening
-    image: binwiederhier/ntfy:v2.11.0
+    image: binwiederhier/ntfy:v2.38.2
     command: serve
     environment:
       NTFY_BASE_URL: https://${PUSH_DOMAIN}
