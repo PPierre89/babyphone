@@ -91,7 +91,7 @@ services:
   coturn:
     <<: *hardening
     profiles: ["remote"]
-    image: coturn/coturn:4.6-alpine
+    image: coturn/coturn:4.19-alpine
     network_mode: host
     read_only: false
     volumes:
